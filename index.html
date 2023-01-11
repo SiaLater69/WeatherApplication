@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Weather App</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+    <h1>Weather App</h1>
+    <form>
+      <label for="city">Enter a city:</label>
+      <input type="text" id="city" name="city">
+      <button type="submit">Search</button>
+    </form>
+    <div id="weather-data" class="container"><script>// Get the form element
+        const form = document.querySelector('form');
+        const styleSheet = document.createElement("style");
+        styleSheet.textContent = `
+   body {
+    text-align: center;
+    align-items: center;
+   }
+`;
+        
+        // Listen for form submit
+        
+        form.addEventListener('submit', (event) => {
+          event.preventDefault();
+        
+          // Get the city from the input field
+          const city = document.querySelector('#city').value;
+        
+          // Fetch weather data from the API
+          fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=181ad87b8a5e2288c169a17b6ad7c56e`)
+            .then(response => response.json())
+            .then(data => {
+              // Extract the data you want to display
+              const temp = data.main.temp;
+              const humidity = data.main.humidity;
+              const wind = data.wind.speed;
+              const weather = data.weather[0].description;
+              
+              // Create a string with the data
+              const weatherData = `Temperature: ${temp}°OK<br>Humidity: ${humidity}%<br>Wind: ${wind}mph<br>Weather: ${weather}`;
+              // Create a button element
+        const btnCelsius = document.createElement('button');
+        // add text to the button
+        btnCelsius.innerHTML = 'Convert to Celsius';
+        // Attach an event listener to the button
+        btnCelsius.addEventListener('click', convertToCelsius);
+        // Append the button to the DOM
+        document.body.appendChild(btnCelsius);
+        
+        // function to convert Kelvin to celsius
+        function convertToCelsius() {
+            // get the current temperature element
+            const temperature = document.querySelector('#weather-data').textContent;
+            // Extract the number from the string
+            const tempNum = Number(temperature.match(/\d+/)[0]);
+            // convert to celsius
+            const celsius = tempNum - 273.15;
+            // update the temperature element
+            document.querySelector('#weather-data').textContent = `Temperature: ${celsius.toFixed(2)}°C`;
+        }
+        
+              // Get the element where the data will be displayed
+              const weatherDataContainer = document.querySelector('#weather-data');
+              
+              // Display the data
+              weatherDataContainer.innerHTML = weatherData;
+            })
+            .catch(error => {
+               console.log(error);
+               weatherDataContainer.innerHTML = "Sorry, something went wrong";
+            });
+        });
+        
+        </script></div>
+   
+  </body>
+</html>
